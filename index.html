@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/urtim_icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Urtim Akademi</title>
+    <script
+      src="https://kit.fontawesome.com/6919eba7dc.js"
+      crossorigin="anonymous"></script>
+    <script type="module" crossorigin src="/assets/index-eCVa0gA9.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-yP_ePcH9.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      (function () {
+        const API_BASE = 'https://api.urtimakademi.com/api';
+        const origFetch = window.fetch;
+        window.fetch = function (input, init) {
+          if (typeof input === 'string' && input.startsWith('/api/')) {
+            // /api/… -> https://api.urtimakademi.com/api/…
+            input = API_BASE + input.replace('/api', '');
+            init = init || {};
+            // CORS + auth
+            init.credentials = 'include';
+            init.headers = Object.assign(
+              {},
+              init.headers || {},
+              (function () {
+                const t = localStorage.getItem('token');
+                return t ? { Authorization: 'Bearer ' + t, 'x-access-token': t } : {};
+              })()
+            );
+          }
+          return origFetch(input, init);
+        };
+      })();
+    </script>
+  </body>
+</html>
